@@ -41,7 +41,7 @@ export default function App() {
   const eliminarTarea = async (tareaIndex) => {
     console.log('tareaIndex: ', tareaIndex)
     try {
-      const tareas = [...JSON.parse(await AsyncStorage.getItem('@tareas'))]
+      var tareas = [...JSON.parse(await AsyncStorage.getItem('@tareas'))]
       tareas = tareas.filter((tarea, index) => index !== tareaIndex)
       await AsyncStorage.setItem('@tareas', JSON.stringify(tareas))
       setListaTareas(tareas)
