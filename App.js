@@ -1,7 +1,7 @@
 import { StatusBar } from 'expo-status-bar'
 import { ImageBackground, FlatList, StyleSheet, Text, View, Button, TextInput, TouchableOpacity } from 'react-native'
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Input } from 'react-native-elements'
 const bg1 = {uri: 'https://marketplace.canva.com/EAE7VlC9ueE/1/0/900w/canva-fondo-de-pantalla-para-celular-floral-rosa-pastel-_cO75HW94eI.jpg'}
 const bg2 = {uri: 'https://image.winudf.com/v2/image1/aW8ud2FsbHBhcGVyLnBhcGVsLnBhcmVkZV9zY3JlZW5fMF8xNjc2NzM5MjkwXzA3Mg/screen-0.webp?fakeurl=1&type=.webp'}
@@ -11,14 +11,23 @@ export default function App() {
   const [texto, onTexto] = useState([])
   const [background, setBackground] = useState(bg1)
   const [listaTareas, setListaTareas] = useState([])
-
-  const guardarTarea = async(tarea = "hay q cambiar esto x la tarea a agregar") => {
-    try {
+  const mainInput = useRef()
+  useEffect(() => {
+    const inicializarAsyncStorage = async() => {
+      // igualar la lista de tareas al asyncStorage
+      await AsyncStorage.setItem('@tareas', 'hola1234')
+      console.log('ASYNC STORAGE XD', await AsyncStorage.getItem('tareas'))
+    }
+    inicializarAsyncStorage()
+  },[])
+  const guardarTarea = async() => {
+    var tarea = mainInput.current.props.value
+    try {      
       const tareas = [...JSON.parse(await AsyncStorage.getItem('tareas'))]
       tareas.push(tarea)
-      await AsyncStorage.setItem('@tareas', JSON.stringify(tareas))
       setListaTareas(tareas)
     } catch (err) {
+      console.log(err)
       throw new Error('ERROR EN: guardarTarea')
     }
   }
@@ -29,6 +38,7 @@ export default function App() {
       await AsyncStorage.setItem('@tareas', JSON.stringify(tareas))
       setListaTareas(tareas)
     } catch (err) {
+      console.log(err)
       throw new Error('ERROR EN: eliminarTarea')
     }
   }
@@ -42,9 +52,7 @@ export default function App() {
   // }
 
   const handleBackground = () => setBackground(bg => bg === bg1 ? bg2 : bg1)
-  const handlePress = () => {
-    
-  }
+  const handlePress = () => guardarTarea()
 
     return (
       <ImageBackground source={background} resizeMode="cover" style={styles.background}>
@@ -55,6 +63,7 @@ export default function App() {
         onChangeText={onChangeText}
         value={text}
         placeholder="Ingresar tarea"
+        ref={mainInput}
       />
       <View style={styles.posicionCentrado}>
         <TouchableOpacity style={styles.botonAgregar} onPress={handlePress}>
