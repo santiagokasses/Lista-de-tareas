@@ -15,15 +15,15 @@ export default function App() {
   useEffect(() => {
     const inicializarAsyncStorage = async() => {
       // igualar la lista de tareas al asyncStorage
-      await AsyncStorage.setItem('@tareas', 'hola1234')
-      console.log('ASYNC STORAGE XD', await AsyncStorage.getItem('tareas'))
+      await AsyncStorage.setItem('@tareas', JSON.stringify(listaTareas))
+      console.log('ASYNC STORAGE: ', await AsyncStorage.getItem('@tareas'))
     }
     inicializarAsyncStorage()
   },[])
   const guardarTarea = async() => {
     var tarea = mainInput.current.props.value
     try {      
-      const tareas = [...JSON.parse(await AsyncStorage.getItem('tareas'))]
+      const tareas = [...JSON.parse(await AsyncStorage.getItem('@tareas'))]
       tareas.push(tarea)
       setListaTareas(tareas)
     } catch (err) {
@@ -33,7 +33,7 @@ export default function App() {
   }
   const eliminarTarea = async(tareaIndex) => {
     try {
-      const tareas = [...JSON.parse(await AsyncStorage.getItem('tareas'))]
+      const tareas = [...JSON.parse(await AsyncStorage.getItem('@tareas'))]
       tareas = tareas.filter((tarea, index) => index !== tareaIndex)
       await AsyncStorage.setItem('@tareas', JSON.stringify(tareas))
       setListaTareas(tareas)
@@ -79,6 +79,7 @@ export default function App() {
         renderItem={({ item }) => <Text style={styles.item}>{item.key}</Text>}
       />
       <Text>{texto}</Text>
+      <Text>Tareas: {JSON.stringify(listaTareas)}</Text>
 
       <View style={styles.posicionCentrado}>
         <TouchableOpacity style={styles.botonAgregar} onPress={handleBackground}>
