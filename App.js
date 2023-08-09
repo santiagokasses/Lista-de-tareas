@@ -11,7 +11,7 @@ export default function App() {
   const [texto, onTexto] = useState([])
   const [background, setBackground] = useState(bg1)
   const [listaTareas, setListaTareas] = useState([])
-  const [estadoTarea, setEstadoTarea] = useState('')
+  
   const mainInput = useRef()
   useEffect(() => {
     const inicializarAsyncStorage = async () => {
