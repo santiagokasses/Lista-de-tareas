@@ -1,28 +1,29 @@
 import { StatusBar } from 'expo-status-bar'
-import { ImageBackground, FlatList, StyleSheet, Text, View, Button, TextInput, TouchableOpacity } from 'react-native'
+import { ImageBackground, FlatList, StyleSheet, Text, View, Button, TextInput, TouchableOpacity, CheckBox } from 'react-native'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { useEffect, useRef, useState } from 'react'
 import { Input } from 'react-native-elements'
-const bg1 = {uri: 'https://marketplace.canva.com/EAE7VlC9ueE/1/0/900w/canva-fondo-de-pantalla-para-celular-floral-rosa-pastel-_cO75HW94eI.jpg'}
-const bg2 = {uri: 'https://image.winudf.com/v2/image1/aW8ud2FsbHBhcGVyLnBhcGVsLnBhcmVkZV9zY3JlZW5fMF8xNjc2NzM5MjkwXzA3Mg/screen-0.webp?fakeurl=1&type=.webp'}
+const bg1 = { uri: 'https://marketplace.canva.com/EAE7VlC9ueE/1/0/900w/canva-fondo-de-pantalla-para-celular-floral-rosa-pastel-_cO75HW94eI.jpg' }
+const bg2 = { uri: 'https://image.winudf.com/v2/image1/aW8ud2FsbHBhcGVyLnBhcGVsLnBhcmVkZV9zY3JlZW5fMF8xNjc2NzM5MjkwXzA3Mg/screen-0.webp?fakeurl=1&type=.webp' }
 
 export default function App() {
   const [text, onChangeText] = useState('')
   const [texto, onTexto] = useState([])
   const [background, setBackground] = useState(bg1)
   const [listaTareas, setListaTareas] = useState([])
+  const [estadoTarea, setEstadoTarea] = useState('')
   const mainInput = useRef()
   useEffect(() => {
-    const inicializarAsyncStorage = async() => {
+    const inicializarAsyncStorage = async () => {
       // igualar la lista de tareas al asyncStorage
       await AsyncStorage.setItem('@tareas', JSON.stringify(listaTareas))
       console.log('ASYNC STORAGE: ', await AsyncStorage.getItem('@tareas'))
     }
     inicializarAsyncStorage()
-  },[])
-  const guardarTarea = async() => {
+  }, [])
+  const guardarTarea = async () => {
     var tarea = mainInput.current.props.value
-    try {      
+    try {
       const tareas = [...JSON.parse(await AsyncStorage.getItem('@tareas'))]
       tareas.push(tarea)
       setListaTareas(tareas)
@@ -32,7 +33,7 @@ export default function App() {
       throw new Error('ERROR EN: guardarTarea')
     }
   }
-  const eliminarTarea = async(tareaIndex) => {
+  const eliminarTarea = async (tareaIndex) => {
     try {
       const tareas = [...JSON.parse(await AsyncStorage.getItem('@tareas'))]
       tareas = tareas.filter((tarea, index) => index !== tareaIndex)
@@ -55,36 +56,44 @@ export default function App() {
   const handleBackground = () => setBackground(bg => bg === bg1 ? bg2 : bg1)
   const handlePress = () => guardarTarea()
 
-    return (
-      <ImageBackground source={background} resizeMode="cover" style={styles.background}>
-    <View style={styles.container}>
-      
-      <Text style={styles.titulo}>TO DO LIST</Text>
-      <Input
-        onChangeText={onChangeText}
-        value={text}
-        placeholder="Ingresar tarea"
-        ref={mainInput}
-      />
-      <View style={styles.posicionCentrado}>
-        <TouchableOpacity style={styles.botonAgregar} onPress={handlePress}>
-          <Text style={[{ fontSize: '1rem', fontWeight: "bold", }]}>Agregar tarea</Text>
-        </TouchableOpacity>
-      </View>
-      
+  return (
+    <ImageBackground source={background} resizeMode="cover" style={styles.background}>
+      <View style={styles.container}>
 
-      <FlatList
-        data={listaTareas}
-        renderItem={({ item }) => <Text style={styles.item}>{item}</Text>}
-        keyExtractor={(item, index) => index.toString()}
-      />
+        <Text style={styles.titulo}>TO DO LIST</Text>
+        <Input
+          onChangeText={onChangeText}
+          value={text}
+          placeholder="Ingresar tarea"
+          ref={mainInput}
+        />
+        <View style={styles.posicionCentrado}>
+          <TouchableOpacity style={styles.botonAgregar} onPress={handlePress}>
+            <Text style={[{ fontSize: '1rem', fontWeight: "bold", }]}>Agregar tarea</Text>
+          </TouchableOpacity>
+        </View>
 
-      <View style={styles.posicionCentrado}>
-        <TouchableOpacity style={styles.botonAgregar} onPress={handleBackground}>
-          <Text style={[{ fontSize: '1rem', fontWeight: "bold", }]}>Cambiar fondo</Text>
-        </TouchableOpacity>
-      </View>
-    </View>
+
+        <FlatList
+          data={listaTareas}
+          renderItem={({ item }) => (
+            <View style={styles.checkboxContainer}>
+              <CheckBox
+                style={styles.checkbox}
+              />
+              <Text style={styles.item}>{item}</Text>
+              
+            </View>
+          )}
+          keyExtractor={(item, index) => index.toString()}
+        />
+
+          <View style={styles.posicionCentrado}>
+            <TouchableOpacity style={styles.botonAgregar} onPress={handleBackground}>
+              <Text style={[{ fontSize: '1rem', fontWeight: "bold", }]}>Cambiar fondo</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
     </ImageBackground>
   );
 }
@@ -109,7 +118,7 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     fontSize: 50,
   },
-  posicionCentrado:{
+  posicionCentrado: {
     display: 'flex',
     alignItems: 'center'
   },
@@ -126,5 +135,12 @@ const styles = StyleSheet.create({
   },
   background: {
     width: '100%'
-  }
+  },
+  checkboxContainer: {
+    flexDirection: 'row',
+    marginBottom: 20,
+  },
+  checkbox: {
+    alignSelf: 'center',
+  },
 });
