@@ -23,6 +23,11 @@ export default function App() {
   }, [])
   const guardarTarea = async () => {
     var tarea = mainInput.current.props.value
+    // var tarea = {
+    //   desc: mainInput.current.props.value,
+    //   completada: false
+    // }
+    document
     try {
       const tareas = [...JSON.parse(await AsyncStorage.getItem('@tareas'))]
       tareas.push(tarea)
@@ -34,8 +39,9 @@ export default function App() {
     }
   }
   const eliminarTarea = async (tareaIndex) => {
+    console.log('tareaIndex: ', tareaIndex)
     try {
-      const tareas = [...JSON.parse(await AsyncStorage.getItem('@tareas'))]
+      var tareas = [...JSON.parse(await AsyncStorage.getItem('@tareas'))]
       tareas = tareas.filter((tarea, index) => index !== tareaIndex)
       await AsyncStorage.setItem('@tareas', JSON.stringify(tareas))
       setListaTareas(tareas)
@@ -62,6 +68,7 @@ export default function App() {
 
         <Text style={styles.titulo}>TO DO LIST</Text>
         <Input
+        id='tarea'
           onChangeText={onChangeText}
           value={text}
           placeholder="Ingresar tarea"
@@ -76,13 +83,15 @@ export default function App() {
 
         <FlatList
           data={listaTareas}
-          renderItem={({ item }) => (
+          renderItem={({ item, index }) => (
             <View style={styles.checkboxContainer}>
               <CheckBox
                 style={styles.checkbox}
               />
               <Text style={styles.item}>{item}</Text>
-              
+              <TouchableOpacity onPress={() => eliminarTarea(index)}>
+                <Text>Eliminar</Text>
+              </TouchableOpacity>
             </View>
           )}
           keyExtractor={(item, index) => index.toString()}
