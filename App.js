@@ -2,6 +2,7 @@ import { StatusBar } from 'expo-status-bar'
 import { ImageBackground, FlatList, StyleSheet, Text, View, Button, TextInput, TouchableOpacity, CheckBox } from 'react-native'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { useEffect, useRef, useState } from 'react'
+import { Icon } from '@iconify/react';
 import { Input } from 'react-native-elements'
 const bg1 = { uri: 'https://marketplace.canva.com/EAE7VlC9ueE/1/0/900w/canva-fondo-de-pantalla-para-celular-floral-rosa-pastel-_cO75HW94eI.jpg' }
 const bg2 = { uri: 'https://image.winudf.com/v2/image1/aW8ud2FsbHBhcGVyLnBhcGVsLnBhcmVkZV9zY3JlZW5fMF8xNjc2NzM5MjkwXzA3Mg/screen-0.webp?fakeurl=1&type=.webp' }
@@ -11,7 +12,7 @@ export default function App() {
   const [texto, onTexto] = useState([])
   const [background, setBackground] = useState(bg1)
   const [listaTareas, setListaTareas] = useState([])
-  
+
   const mainInput = useRef()
   useEffect(() => {
     const inicializarAsyncStorage = async () => {
@@ -80,22 +81,26 @@ export default function App() {
           </TouchableOpacity>
         </View>
 
-
-        <FlatList
+        
+          <FlatList
           data={listaTareas}
           renderItem={({ item, index }) => (
+            <View style={styles.cuadro}>
             <View style={styles.checkboxContainer}>
               <CheckBox
                 style={styles.checkbox}
               />
               <Text style={styles.item}>{item}</Text>
-              <TouchableOpacity onPress={() => eliminarTarea(index)}>
-                <Text>Eliminar</Text>
+              <TouchableOpacity  onPress={() => eliminarTarea(index)}>
+                <Icon icon="ph:trash-bold" style={{flex: 1, display: 'flex', alignSelf : 'center'}}/>
               </TouchableOpacity>
+            </View>
             </View>
           )}
           keyExtractor={(item, index) => index.toString()}
         />
+        
+        
 
           <View style={styles.posicionCentrado}>
             <TouchableOpacity style={styles.botonAgregar} onPress={handleBackground}>
@@ -152,4 +157,12 @@ const styles = StyleSheet.create({
   checkbox: {
     alignSelf: 'center',
   },
+  cuadro:{
+    borderWidth: 2,
+    borderRadius: 20,
+    padding: "0.5rem",
+    padding: "0.3rem",
+    borderColor: "#C4E8DC",
+    backgroundColor: '#D7FFF2'
+  }
 });
