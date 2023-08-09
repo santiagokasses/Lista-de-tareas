@@ -152,7 +152,7 @@ const styles = StyleSheet.create({
   },
   checkboxContainer: {
     flexDirection: 'row',
-    marginBottom: 20,
+    
   },
   checkbox: {
     alignSelf: 'center',
@@ -161,8 +161,9 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderRadius: 20,
     padding: "0.5rem",
-    padding: "0.3rem",
     borderColor: "#C4E8DC",
-    backgroundColor: '#D7FFF2'
+    backgroundColor: '#D7FFF2',
+    marginBottom: '1rem',
+    paddingLeft: '1rem',
   }
 });
