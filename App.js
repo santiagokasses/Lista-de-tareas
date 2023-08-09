@@ -26,6 +26,7 @@ export default function App() {
       const tareas = [...JSON.parse(await AsyncStorage.getItem('@tareas'))]
       tareas.push(tarea)
       setListaTareas(tareas)
+      await AsyncStorage.setItem('@tareas', JSON.stringify(tareas))
     } catch (err) {
       console.log(err)
       throw new Error('ERROR EN: guardarTarea')
@@ -73,13 +74,10 @@ export default function App() {
       
 
       <FlatList
-        data={[
-          { key: 'tarea 1' },
-        ]}
-        renderItem={({ item }) => <Text style={styles.item}>{item.key}</Text>}
+        data={listaTareas}
+        renderItem={({ item }) => <Text style={styles.item}>{item}</Text>}
+        keyExtractor={(item, index) => index.toString()}
       />
-      <Text>{texto}</Text>
-      <Text>Tareas: {JSON.stringify(listaTareas)}</Text>
 
       <View style={styles.posicionCentrado}>
         <TouchableOpacity style={styles.botonAgregar} onPress={handleBackground}>
