@@ -12,7 +12,12 @@ export default function App() {
   const [texto, onTexto] = useState([])
   const [background, setBackground] = useState(bg1)
   const [listaTareas, setListaTareas] = useState([])
-
+  const [checks, setChecks] = useState([]);
+  const handleSelect = index => {
+    let newSelection = [...checks]
+    newSelection[index] = !newSelection[index]
+    setChecks(newSelection)
+  }
   const mainInput = useRef()
   useEffect(() => {
     const inicializarAsyncStorage = async () => {
@@ -23,6 +28,7 @@ export default function App() {
     inicializarAsyncStorage()
   }, [])
   const guardarTarea = async () => {
+    setChecks([...checks, false])
     var tarea = mainInput.current.props.value
     // var tarea = {
     //   desc: mainInput.current.props.value,
@@ -74,6 +80,7 @@ export default function App() {
           value={text}
           placeholder="Ingresar tarea"
           ref={mainInput}
+          style={styles.mainInput}
         />
         <View style={styles.posicionCentrado}>
           <TouchableOpacity style={styles.botonAgregar} onPress={handlePress}>
@@ -89,6 +96,8 @@ export default function App() {
             <View style={styles.checkboxContainer}>
               <CheckBox
                 style={styles.checkbox}
+                value={checks[index]}
+                onValueChange={() => handleSelect(index)}
               />
               <Text style={styles.item}>{item}</Text>
               <TouchableOpacity  onPress={() => eliminarTarea(index)}>
@@ -165,5 +174,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#D7FFF2',
     marginBottom: '1rem',
     paddingLeft: '1rem',
+  },
+  mainInput: {
+    backgroundColor: '#D7FFF2DD',
+    borderRadius: 5
   }
 });
