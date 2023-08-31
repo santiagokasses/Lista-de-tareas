@@ -4,6 +4,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 import { useEffect, useRef, useState } from 'react'
 import { Icon } from '@iconify/react';
 import { Input } from 'react-native-elements'
+import { findDOMNode } from 'react-dom';
 const bg1 = { uri: 'https://marketplace.canva.com/EAE7VlC9ueE/1/0/900w/canva-fondo-de-pantalla-para-celular-floral-rosa-pastel-_cO75HW94eI.jpg' }
 const bg2 = { uri: 'https://image.winudf.com/v2/image1/aW8ud2FsbHBhcGVyLnBhcGVsLnBhcmVkZV9zY3JlZW5fMF8xNjc2NzM5MjkwXzA3Mg/screen-0.webp?fakeurl=1&type=.webp' }
 
@@ -99,7 +100,9 @@ export default function App() {
                 value={checks[index]}
                 onValueChange={() => handleSelect(index)}
               />
-              <Text style={styles.item}>{item}</Text>
+              {
+                checks[index] ? <Text style={styles.itemTachado}>{item}</Text> : <Text style={styles.item}>{item}</Text>
+              }
               <TouchableOpacity  onPress={() => eliminarTarea(index)}>
                 <Icon icon="ph:trash-bold" style={{flex: 1, display: 'flex', alignSelf : 'center'}}/>
               </TouchableOpacity>
@@ -178,5 +181,11 @@ const styles = StyleSheet.create({
   mainInput: {
     backgroundColor: '#D7FFF2DD',
     borderRadius: 5
+  },
+  itemTachado:{
+    padding: 10,
+    fontSize: 18,
+    height: 44,
+    textDecorationLine: 'line-through'
   }
 });
