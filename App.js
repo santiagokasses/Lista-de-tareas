@@ -19,33 +19,39 @@ export default function App() {
     newSelection[index] = !newSelection[index]
     setChecks(newSelection)
   }
+
+
+ 
+
   const mainInput = useRef()
+
   useEffect(() => {
     const inicializarAsyncStorage = async () => {
-      // igualar la lista de tareas al asyncStorage
-      await AsyncStorage.setItem('@tareas', JSON.stringify(listaTareas))
-      console.log('ASYNC STORAGE: ', await AsyncStorage.getItem('@tareas'))
-    }
-    inicializarAsyncStorage()
-  }, [])
+      try {
+        const storedData = await AsyncStorage.getItem('@tareas');
+        if (storedData !== null) {
+          setListaTareas(JSON.parse(storedData));
+        }
+      } catch (error) {
+        console.error('Error initializing AsyncStorage:', error);
+      }
+    };
+  
+    inicializarAsyncStorage();
+  }, []);
+  
+
   const guardarTarea = async () => {
-    setChecks([...checks, false])
-    var tarea = mainInput.current.props.value
-    // var tarea = {
-    //   desc: mainInput.current.props.value,
-    //   completada: false
-    // }
-    document
+    const tarea = mainInput.current.props.value;
     try {
-      const tareas = [...JSON.parse(await AsyncStorage.getItem('@tareas'))]
-      tareas.push(tarea)
-      setListaTareas(tareas)
-      await AsyncStorage.setItem('@tareas', JSON.stringify(tareas))
+      const tareas = [...listaTareas, tarea];
+      setListaTareas(tareas);
+      await AsyncStorage.setItem('@tareas', JSON.stringify(tareas));
     } catch (err) {
-      console.log(err)
-      throw new Error('ERROR EN: guardarTarea')
+      console.log(err);
+      throw new Error('ERROR EN: guardarTarea');
     }
-  }
+  };
   const eliminarTarea = async (tareaIndex) => {
     console.log('tareaIndex: ', tareaIndex)
     try {
